@@ -3,6 +3,7 @@ import {Track} from "../models/Track";
 import mongoose from "mongoose";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
+import {TrackType} from "../types";
 
 const tracksRouter = express.Router();
 
@@ -30,7 +31,7 @@ tracksRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
     return res.status(400).send({message: 'The name or album is required!'});
   }
 
-  const trackData = {
+  const trackData: TrackType = {
     name: req.body.name,
     album: req.body.album,
     duration: req.body.duration,

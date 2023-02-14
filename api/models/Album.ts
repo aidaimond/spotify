@@ -1,5 +1,5 @@
 import mongoose, {Types} from "mongoose";
-import Artist from "./Artists";
+import Artist from "./Artist";
 
 const Schema = mongoose.Schema;
 

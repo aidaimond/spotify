@@ -1,5 +1,5 @@
 import mongoose, {Types} from "mongoose";
-import Album from "./Albums";
+import Album from "./Album";
 
 const Schema = mongoose.Schema;
 
@@ -18,7 +18,10 @@ const TracksSchema = new Schema ({
       message: 'Album does not exist',
     }
   },
-  duration: String,
+  duration: {
+    type: String,
+    required: true,
+  }
 });
 
-const Track = mongoose.model('Track', TracksSchema);
+export const Track = mongoose.model('Track', TracksSchema);

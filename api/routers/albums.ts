@@ -2,6 +2,7 @@ import express from "express";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
+import {AlbumType} from "../types";
 
 const albumsRouter = express.Router();
 
@@ -36,7 +37,7 @@ albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
   if (!req.body.name || !req.body.artist || !req.body.yearOfIssue) {
     return res.status(404).send({message: 'Album name, year of issue or artist name is required'});
   }
-  const albumData = {
+  const albumData: AlbumType = {
     name: req.body.name,
     artist: req.body.artist,
     yearOfIssue: req.body.yearOfIssue,
