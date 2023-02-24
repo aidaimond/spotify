@@ -19,7 +19,7 @@ const AlbumsSchema = new Schema({
     }
   },
   yearOfIssue: {
-    type: String,
+    type: Number,
     required: true,
   },
   image: String,
