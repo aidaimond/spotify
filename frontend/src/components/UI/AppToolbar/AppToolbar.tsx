@@ -16,7 +16,7 @@ const AppToolbar = () => {
       <Toolbar>
         <Grid container justifyContent={'space-between'} alignItems={"center"}>
           <Typography variant="h6" component="div">
-            <Link to="/">CompStore</Link>
+            <Link to="/">Spotify</Link>
           </Typography>
           <Button component={NavLink} to="/register" color="inherit">Sign up</Button>
         </Grid>
