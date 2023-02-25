@@ -18,7 +18,6 @@ const AppToolbar = () => {
           <Typography variant="h6" component="div">
             <Link to="/">Spotify</Link>
           </Typography>
-          <Button component={NavLink} to="/register" color="inherit">Sign up</Button>
         </Grid>
       </Toolbar>
     </AppBar>

@@ -12,7 +12,7 @@ const initialState: ArtistsState = {
 }
 
 export const artistsSlice = createSlice({
-  name: 'users',
+  name: 'artists',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

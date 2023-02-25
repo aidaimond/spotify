@@ -12,16 +12,15 @@ const initialState: AlbumsState = {
 }
 
 export const albumsSlice = createSlice({
-  name: 'users',
+  name: 'albums',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchAlbums.pending, (state) => {
       // state.registerLoading = true;
-      // state.registerError = null;
     });
     builder.addCase(fetchAlbums.fulfilled, (state, action) => {
-     state.albums = action.payload
+     state.albums = action.payload;
     });
     builder.addCase(fetchAlbums.rejected, (state) => {
 
@@ -31,4 +30,4 @@ export const albumsSlice = createSlice({
 
 export const albumsReducer = albumsSlice.reducer;
 
-export const selectAlbums = (state: RootState) => state.albums;
+export const selectAlbums = (state: RootState) => state.albums.albums;
