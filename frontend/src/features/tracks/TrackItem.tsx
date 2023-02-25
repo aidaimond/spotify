@@ -16,13 +16,10 @@ const TrackItem: React.FC<Props> = ({track}) => {
           <ListItemIcon>
             <AudiotrackIcon />
           </ListItemIcon>
-          <ListItemText primary="Trash" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <AudiotrackIcon />
-          </ListItemIcon>
-          <ListItemText primary="Spam" />
+          <ListItemText>
+            {track.name + ' '}
+            <span style={{opacity: 0.6}}>{track.duration}</span>
+          </ListItemText>
         </ListItemButton>
       </List>
     </Grid>

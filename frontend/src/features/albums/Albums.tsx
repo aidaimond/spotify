@@ -1,19 +1,19 @@
 import {Grid, Typography} from '@mui/material';
 import React, {useEffect} from 'react';
+import {useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {fetchTracks} from "./tracksThunks";
-import {selectTracks} from "./tracksSlice";
-import TrackItem from "./TrackItem";
-import {useParams} from "react-router-dom";
+import {selectAlbums} from "./albumsSlice";
+import {fetchAlbums} from "./albumsThunks";
+import AlbumItem from "./AlbumItem";
 
-const Tracks = () => {
+const Albums = () => {
   const dispatch = useAppDispatch();
-  const tracks = useAppSelector(selectTracks);
+  const albums = useAppSelector(selectAlbums);
   const {id} = useParams();
 
   useEffect(() => {
-    if(id) {
-      dispatch(fetchTracks(id));
+    if (id) {
+      dispatch(fetchAlbums(id));
     }
   }, [dispatch]);
 
@@ -27,12 +27,12 @@ const Tracks = () => {
         </Grid>
       </Grid>
       <Grid item container spacing={2}>
-        {tracks.map(track => (
-          <TrackItem key={track._id} track={track}/>
+        {albums.map(album => (
+          <AlbumItem key={album._id} album={album}/>
         ))}
       </Grid>
     </Grid>
   );
 }
 
-export default Tracks;
+export default Albums;

@@ -18,8 +18,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Artists/>}/>
             <Route path="/artists" element={<Artists/>}/>
-            <Route path="/artists/:id"  element={<Albums/>}/>
-            <Route path="/:tracks"  element={<Tracks/>}/>
+            <Route path="/albums/:id"  element={<Albums/>}/>
+            <Route path="/tracks/:id"  element={<Tracks/>}/>
             <Route path="*" element={(<h1>Not found!</h1>)}/>
           </Routes>
         </Container>

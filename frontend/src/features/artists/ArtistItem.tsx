@@ -28,7 +28,7 @@ const ArtistItem: React.FC<Props> = ({artist}) => {
         <CardHeader title={artist.name}/>
         <ImageCardMedia image={cardImage} title={artist.name}/>
         <CardActions>
-          <IconButton component={Link} to={'/albums?artist=' + artist._id}>
+          <IconButton component={Link} to={'/albums/' + artist._id}>
             <ArrowForwardIcon/>
           </IconButton>
         </CardActions>

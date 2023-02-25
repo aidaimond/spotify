@@ -4,7 +4,8 @@ const rootPath = __dirname;
 
 const config = {
   rootPath,
-  publicPath: path.join(rootPath, 'public')
+  publicPath: path.join(rootPath, 'public'),
+  db : 'mongodb://localhost/spotify',
 };
 
 export default config;
