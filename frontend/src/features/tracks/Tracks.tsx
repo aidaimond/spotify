@@ -17,12 +17,20 @@ const Tracks = () => {
     }
   }, [dispatch]);
 
+  let album = '';
+
+  tracks.map(track => {
+    if(track.album._id === id) {
+      album = track.album.name;
+    }
+  });
+
   return (
     <Grid container direction="column" spacing={2}>
       <Grid item container justifyContent="space-between" alignItems="center">
         <Grid item>
           <Typography variant="h4">
-            {id}
+            {album}
           </Typography>
         </Grid>
       </Grid>

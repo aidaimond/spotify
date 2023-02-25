@@ -17,12 +17,20 @@ const Albums = () => {
     }
   }, [dispatch]);
 
+  let artist = '';
+
+  albums.map(album => {
+    if(album.artist._id === id) {
+      artist = album.artist.name;
+    }
+  });
+
   return (
     <Grid container direction="column" spacing={2}>
       <Grid item container justifyContent="space-between" alignItems="center">
         <Grid item>
           <Typography variant="h4">
-            {id}
+            {artist}
           </Typography>
         </Grid>
       </Grid>

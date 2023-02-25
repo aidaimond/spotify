@@ -59,13 +59,13 @@ const run = async () => {
     {name: "Latin Girls", album: elephunk._id, duration: "6:18", number: 4},
     {name: "Shut Up", album: elephunk._id, duration: "4:56", number: 5},
 
-    {name: "Like that?", album: monkeyBusiness._id, duration: "4:35", number: 1},
+    {name: "Like that", album: monkeyBusiness._id, duration: "4:35", number: 1},
     {name: "Gone Going", album: monkeyBusiness._id, duration: "3:14", number: 2},
     {name: "My Humps", album: monkeyBusiness._id, duration: "5:27", number: 3},
     {name: "Union", album: monkeyBusiness._id, duration: "5:04", number: 4},
     {name: "My Style", album: monkeyBusiness._id, duration: "4:29", number: 5},
 
-    {name: "Demons?", album: nightVision._id, duration: "2:56", number: 1},
+    {name: "Demons", album: nightVision._id, duration: "2:56", number: 1},
     {name: "Working man", album: nightVision._id, duration: "3:55", number: 2},
     {name: "Every Night", album: nightVision._id, duration: "3:37", number: 3},
     {name: "Radioactive", album: nightVision._id, duration: "3:07", number: 4},

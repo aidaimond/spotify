@@ -17,7 +17,7 @@ const TrackItem: React.FC<Props> = ({track}) => {
             <AudiotrackIcon />
           </ListItemIcon>
           <ListItemText>
-            {track.name + ' '}
+            {track.number + '. ' + track.name + ' '}
             <span style={{opacity: 0.6}}>{track.duration}</span>
           </ListItemText>
         </ListItemButton>
