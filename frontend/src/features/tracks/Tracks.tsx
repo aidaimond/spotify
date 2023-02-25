@@ -1,14 +1,15 @@
-import {Grid, Typography} from '@mui/material';
+import {Box, CircularProgress, Grid, Typography} from '@mui/material';
 import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {fetchTracks} from "./tracksThunks";
-import {selectTracks} from "./tracksSlice";
+import {selectTracks, selectTracksLoading} from "./tracksSlice";
 import TrackItem from "./TrackItem";
 import {useParams} from "react-router-dom";
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
   const tracks = useAppSelector(selectTracks);
+  const tracksLoading = useAppSelector(selectTracksLoading);
   const {id} = useParams();
 
   useEffect(() => {
@@ -26,6 +27,10 @@ const Tracks = () => {
   });
 
   return (
+    tracksLoading ?
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box> :
     <Grid container direction="column" spacing={2}>
       <Grid item container justifyContent="space-between" alignItems="center">
         <Grid item>

@@ -5,10 +5,12 @@ import {fetchArtists} from "./artistsThunks";
 
 interface ArtistsState {
   artists: IArtist[] | [];
+  artistsLoading: boolean;
 }
 
 const initialState: ArtistsState = {
-  artists: []
+  artists: [],
+  artistsLoading: false,
 }
 
 export const artistsSlice = createSlice({
@@ -17,15 +19,14 @@ export const artistsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchArtists.pending, (state) => {
-      // state.registerLoading = true;
-      // state.registerError = null;
+      state.artistsLoading = true;
     });
     builder.addCase(fetchArtists.fulfilled, (state, action) => {
       state.artists = action.payload;
+      state.artistsLoading = false;
     });
     builder.addCase(fetchArtists.rejected, (state) => {
-      // state.registerLoading = false;
-      // state.registerError = error || null;
+      state.artistsLoading = false;
     });
   },
 });
@@ -33,3 +34,4 @@ export const artistsSlice = createSlice({
 export const artistsReducer = artistsSlice.reducer;
 
 export const selectArtists = (state: RootState) => state.artists.artists;
+export const selectArtistsLoading = (state: RootState) => state.artists.artistsLoading;

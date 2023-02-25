@@ -5,10 +5,12 @@ import {RootState} from "../../app/store";
 
 interface TracksState {
   tracks: ITrack[] | [];
+  tracksLoading: boolean;
 }
 
 const initialState: TracksState = {
   tracks: [],
+  tracksLoading: false,
 }
 
 export const tracksSlice = createSlice({
@@ -17,13 +19,14 @@ export const tracksSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchTracks.pending, (state) => {
-      // state.registerLoading = true;
+      state.tracksLoading = true;
     });
     builder.addCase(fetchTracks.fulfilled, (state, action) => {
       state.tracks = action.payload;
+      state.tracksLoading = false;
     });
     builder.addCase(fetchTracks.rejected, (state) => {
-//
+      state.tracksLoading = false;
     });
   },
 });
@@ -31,3 +34,4 @@ export const tracksSlice = createSlice({
 export const tracksReducer = tracksSlice.reducer;
 
 export const selectTracks = (state: RootState) => state.tracks.tracks;
+export const selectTracksLoading = (state: RootState) => state.tracks.tracksLoading;
