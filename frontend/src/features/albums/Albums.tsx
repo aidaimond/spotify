@@ -16,7 +16,7 @@ const Albums = () => {
     if (id) {
       dispatch(fetchAlbums(id));
     }
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   let artist = '';
 

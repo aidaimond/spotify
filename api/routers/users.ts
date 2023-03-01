@@ -15,7 +15,7 @@ usersRouter.post ('/', async (req, res, next) => {
     password: req.body.password,
   });
 
-  try{
+  try {
     user.generateToken();
     await user.save();
     return res.send({message: 'Registered successfully!', user});

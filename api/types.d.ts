@@ -15,6 +15,7 @@ export interface TrackType {
   name: string;
   album: string;
   duration: string;
+  number: number;
 }
 
 export interface IUser {

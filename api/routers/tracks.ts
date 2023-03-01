@@ -35,6 +35,7 @@ tracksRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
     name: req.body.name,
     album: req.body.album,
     duration: req.body.duration,
+    number: req.body.number,
   };
   const track = new Track(trackData);
 
