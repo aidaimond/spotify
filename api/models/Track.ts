@@ -25,7 +25,7 @@ const TracksSchema = new Schema ({
   number: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 export const Track = mongoose.model('Track', TracksSchema);

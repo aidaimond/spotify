@@ -18,7 +18,7 @@ usersRouter.post ('/', async (req, res, next) => {
   try{
     user.generateToken();
     await user.save();
-    return res.send(user);
+    return res.send({message: 'Registered successfully!', user});
 
   } catch (e) {
 
