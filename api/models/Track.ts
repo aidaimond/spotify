@@ -10,7 +10,7 @@ const TracksSchema = new Schema ({
     unique: true,
   },
   album: {
-    type:Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Album',
     required: true,
     validate: {
