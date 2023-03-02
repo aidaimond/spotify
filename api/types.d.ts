@@ -18,9 +18,25 @@ export interface TrackType {
   number: number;
 }
 
+export interface TrackType2 {
+  name: string;
+  album: {
+    artist: string;
+  };
+  duration: string;
+  number: number;
+}
+
 export interface IUser {
   username: string;
   password: string;
   token: string;
+}
+
+export interface TrackHistoryType {
+  user: string;
+  track: string;
+  artist: string;
+  datetime: string;
 }
 

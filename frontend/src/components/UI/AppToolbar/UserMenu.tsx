@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Button, Menu, MenuItem } from '@mui/material';
-import { User } from '../../../types';
+import React, {useState} from 'react';
+import {Button, Menu, MenuItem} from '@mui/material';
+import {User} from '../../../types';
+import {Link} from "react-router-dom";
 
 interface Props {
   user: User;
@@ -33,6 +34,9 @@ const UserMenu: React.FC<Props> = ({user}) => {
         <MenuItem>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
         <MenuItem>Logout</MenuItem>
+        <MenuItem>
+            <Link style={{textDecoration: "none", color: "inherit"}} to="/track_history">Track History</Link>
+        </MenuItem>
       </Menu>
     </>
   );

@@ -58,5 +58,13 @@ export interface GlobalError {
   error: string;
 }
 
+export interface ITrackHistory {
+  artist: IArtist;
+  datetime: string;
+  track: ITrack;
+  user: string;
+  _id: string;
+}
+
 
 

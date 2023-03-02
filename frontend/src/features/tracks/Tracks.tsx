@@ -5,10 +5,12 @@ import {fetchTracks} from "./tracksThunks";
 import {selectTracks, selectTracksLoading} from "./tracksSlice";
 import TrackItem from "./TrackItem";
 import {useParams} from "react-router-dom";
+import {selectAlbums} from "../albums/albumsSlice";
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
   const tracks = useAppSelector(selectTracks);
+  const albums = useAppSelector(selectAlbums);
   const tracksLoading = useAppSelector(selectTracksLoading);
   const {id} = useParams();
 
@@ -16,15 +18,7 @@ const Tracks = () => {
     if(id) {
       dispatch(fetchTracks(id));
     }
-  }, [dispatch]);
-
-  let album = '';
-
-  tracks.map(track => {
-    if(track.album._id === id) {
-      album = track.album.name;
-    }
-  });
+  }, [dispatch, id]);
 
   return (
     tracksLoading ?
@@ -32,10 +26,15 @@ const Tracks = () => {
         <CircularProgress />
       </Box> :
     <Grid container direction="column" spacing={2}>
-      <Grid item container justifyContent="space-between" alignItems="center">
+      <Grid item container direction="column">
+        <Grid item>
+          <Typography variant="h5" sx={{marginBottom: 3}}>
+            {albums.length && albums[0].artist.name}
+          </Typography>
+        </Grid>
         <Grid item>
           <Typography variant="h4">
-            {album}
+            {tracks.length && tracks[0].album.name}
           </Typography>
         </Grid>
       </Grid>

@@ -1,8 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { GlobalError, LoginMutation, RegisterMutation, RegisterResponse, User, ValidationError } from '../../types';
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {GlobalError, LoginMutation, RegisterMutation, RegisterResponse, User, ValidationError} from '../../types';
 import axiosApi from '../../axiosApi';
-import { isAxiosError } from 'axios';
-import { RootState } from '../../app/store';
+import {isAxiosError} from 'axios';
 
 export const register = createAsyncThunk<User, RegisterMutation, {rejectValue: ValidationError}>(
   'users/register',
@@ -30,17 +29,6 @@ export const login = createAsyncThunk<User, LoginMutation, {rejectValue: GlobalE
         return rejectWithValue(e.response.data as GlobalError);
       }
       throw e;
-    }
-  }
-);
-
-export const secret = createAsyncThunk<void, void, {state: RootState}> (
-  'users/secret',
-  async (_, {getState}) => {
-    const user = getState().users.user;
-
-    if(user) {
-      return axiosApi.post('users/secret', null, {headers: {'Authorization': user.token}});
     }
   }
 );

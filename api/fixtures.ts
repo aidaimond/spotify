@@ -3,6 +3,8 @@ import config from './config';
 import Artist from "./models/Artist";
 import Album from "./models/Album";
 import {Track} from "./models/Track";
+import crypto from "crypto";
+import User from "./models/User";
 
 
 const run = async () => {
@@ -17,6 +19,9 @@ const run = async () => {
   } catch (e) {
     console.log('Collections were not present, skipping drop...');
   }
+
+  await User.create({username: "user", password: "1qaz2wsx", token: crypto.randomUUID()});
+  await User.create({username: "attractor", password: "2wsx3edc", token: crypto.randomUUID()});
 
   const [theBlackEyedPeas, imagineDragons] = await Artist.create({
       name: "The Black Eyed Peas",

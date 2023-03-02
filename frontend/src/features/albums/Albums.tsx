@@ -18,14 +18,6 @@ const Albums = () => {
     }
   }, [dispatch, id]);
 
-  let artist = '';
-
-  albums.map(album => {
-    if(album.artist._id === id) {
-      artist = album.artist.name;
-    }
-  });
-
   return (
     albumsLoading ?
       <Box sx={{ display: 'flex' }}>
@@ -35,7 +27,7 @@ const Albums = () => {
       <Grid item container justifyContent="space-between" alignItems="center">
         <Grid item>
           <Typography variant="h4">
-            {artist}
+            {albums.length && albums[0].artist.name}
           </Typography>
         </Grid>
       </Grid>
