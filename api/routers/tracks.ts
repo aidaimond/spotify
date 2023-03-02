@@ -17,7 +17,7 @@ tracksRouter.get('/', async (req, res, next) => {
           path: "artist",
           select: "name",
         }
-      });
+      }).sort('number');
       return res.send(albumsTracks);
     }
     if(req.query.artist) {
