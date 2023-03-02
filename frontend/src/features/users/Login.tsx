@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { LoginMutation } from '../../types';
-import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography, Alert} from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+  Alert,
+  CircularProgress
+} from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectLoginError } from './usersSlice';
+import {selectLoginError, selectLoginLoading} from './usersSlice';
 import { login } from './usersThunks';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectLoginError);
+  const loginLoading = useAppSelector(selectLoginLoading);
   const navigate = useNavigate();
 
   const [state, setState] = useState<LoginMutation>({
@@ -81,7 +93,7 @@ const Login = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            Sign In
+            {loginLoading ? <CircularProgress/>: "Sign In"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

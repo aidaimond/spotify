@@ -5,12 +5,10 @@ import {fetchTracks} from "./tracksThunks";
 import {selectTracks, selectTracksLoading} from "./tracksSlice";
 import TrackItem from "./TrackItem";
 import {useParams} from "react-router-dom";
-import {selectAlbums} from "../albums/albumsSlice";
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
   const tracks = useAppSelector(selectTracks);
-  const albums = useAppSelector(selectAlbums);
   const tracksLoading = useAppSelector(selectTracksLoading);
   const {id} = useParams();
 
@@ -29,7 +27,7 @@ const Tracks = () => {
       <Grid item container direction="column">
         <Grid item>
           <Typography variant="h5" sx={{marginBottom: 3}}>
-            {albums.length && albums[0].artist.name}
+            {tracks.length && tracks[0].album.artist.name}
           </Typography>
         </Grid>
         <Grid item>

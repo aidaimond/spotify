@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { RegisterMutation } from '../../types';
-import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import {Avatar, Box, Button, CircularProgress, Container, Grid, Link, TextField, Typography} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectRegisterError } from './usersSlice';
+import {selectRegisterError, selectRegisterLoading} from './usersSlice';
 import { register } from './usersThunks';
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectRegisterError);
+  const registerLoading = useAppSelector(selectRegisterLoading);
   const navigate = useNavigate();
 
   const [state, setState] = useState<RegisterMutation>({username: '', password: ''});
@@ -28,7 +29,7 @@ const Register = () => {
       await dispatch(register(state)).unwrap();
       navigate('/');
     } catch (e) {
-      // error happened
+      throw new Error();
     }
   };
 
@@ -90,7 +91,7 @@ const Register = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            Sign Up
+            {registerLoading ? <CircularProgress/> : "Sign Up"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

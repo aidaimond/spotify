@@ -7,12 +7,14 @@ interface TracksState {
   tracks: ITrack[] | [];
   tracksLoading: boolean;
   trackHistory: ITrackHistory[] | null;
+  trackHistoryLoading: boolean;
 }
 
 const initialState: TracksState = {
   tracks: [],
   tracksLoading: false,
   trackHistory: null,
+  trackHistoryLoading: false,
 }
 
 export const tracksSlice = createSlice({
@@ -32,14 +34,14 @@ export const tracksSlice = createSlice({
     });
 
     builder.addCase(fetchTrackHistory.pending, (state) => {
-      // state.tracksLoading = true;
+      state.trackHistoryLoading = true;
     });
     builder.addCase(fetchTrackHistory.fulfilled, (state, action) => {
       state.trackHistory = action.payload;
-      // state.tracksLoading = false;
+      state.trackHistoryLoading = false;
     });
     builder.addCase(fetchTrackHistory.rejected, (state) => {
-      // state.tracksLoading = false;
+      state.trackHistoryLoading = false;
     });
   },
 });
@@ -49,3 +51,4 @@ export const tracksReducer = tracksSlice.reducer;
 export const selectTracks = (state: RootState) => state.tracks.tracks;
 export const selectTracksLoading = (state: RootState) => state.tracks.tracksLoading;
 export const selectTrackHistory = (state: RootState) => state.tracks.trackHistory;
+export const selectTrackHistoryLoading = (state: RootState) => state.tracks.trackHistoryLoading;

@@ -3,9 +3,9 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchTrackHistory} from "./tracksThunks";
 import {selectUser} from "../users/usersSlice";
 import {Navigate} from "react-router-dom";
-import {selectTrackHistory} from "./tracksSlice";
+import {selectTrackHistory, selectTrackHistoryLoading} from "./tracksSlice";
 import TrackHistoryItem from "./TrackHistoryItem";
-import {Typography} from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
 
 const TrackHistory = () => {
 
@@ -16,12 +16,17 @@ const TrackHistory = () => {
 
   const user = useAppSelector(selectUser);
   const trackHistory = useAppSelector(selectTrackHistory);
+  const trackHistoryLoading = useAppSelector(selectTrackHistoryLoading);
 
   if(!user) {
     return <Navigate to={"/login"}/>
   }
 
   return (
+    trackHistoryLoading ?
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box> :
     <>
       <Typography variant="h5" sx={{marginBottom: 3}}>
         {user ? " " + user.username[0].toUpperCase() + user.username.slice(1) : null} Track History

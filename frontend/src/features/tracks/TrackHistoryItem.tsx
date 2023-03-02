@@ -18,8 +18,8 @@ const TrackHistoryItem: React.FC<Props> = ({trackHistory}) => {
             <AudiotrackIcon />
           </ListItemIcon>
           <ListItemText>
-            {trackHistory.artist.name + '. ' + trackHistory.track.name + ' '}
-            <span style={{opacity: 0.6}}>{dayjs(trackHistory.datetime).format('DD.MM.YYYY HH:mm')}</span>
+            {trackHistory.artist.name + ' - ' + trackHistory.track.name + ' '}
+            <span style={{opacity: 0.6}}>{'Listened: ' + dayjs(trackHistory.datetime).format('DD.MM.YYYY HH:mm')}</span>
           </ListItemText>
         </ListItemButton>
       </List>
