@@ -3,6 +3,7 @@ import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const artistsRouter = express.Router();
 
@@ -35,6 +36,17 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
     } else {
       return next(e);
     }
+  }
+});
+
+artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+  try {
+    await Artist.deleteOne({_id: req.params.id});
+    const artists = await Artist.find();
+    return res.send(artists);
+
+  } catch (e) {
+    next(e);
   }
 });
 

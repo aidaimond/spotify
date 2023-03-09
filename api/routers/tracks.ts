@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const tracksRouter = express.Router();
 
@@ -55,6 +56,17 @@ tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
       return res.status(400).send(e);
     }
     return next(e);
+  }
+});
+
+tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+  try {
+    await Track.deleteOne({_id: req.params.id});
+    const tracks = await Track.find();
+    return res.send(tracks);
+
+  } catch (e) {
+    next(e);
   }
 });
 
