@@ -2,7 +2,7 @@ import express from "express";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
-import {AlbumType} from "../types";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const albumsRouter = express.Router();
 
@@ -32,21 +32,21 @@ albumsRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
-
-  if (!req.body.name || !req.body.artist || !req.body.yearOfIssue) {
-    return res.status(404).send({message: 'Album name, year of issue or artist name is required'});
-  }
-  const albumData: AlbumType = {
-    name: req.body.name,
-    artist: req.body.artist,
-    yearOfIssue: req.body.yearOfIssue,
-    image: req.file ? req.file.filename : null,
-  };
-  const album = new Album(albumData);
-
+albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
   try {
-    await album.save();
+    if (!req.body.name || !req.body.artist || !req.body.yearOfIssue) {
+      return res.status(404).send({message: 'Album name, year of issue or artist name is required'});
+    }
+    const user = (req as RequestWithUser).user;
+
+    const album = await Album.create({
+      name: req.body.name,
+      artist: req.body.artist,
+      yearOfIssue: req.body.yearOfIssue,
+      image: req.file ? req.file.filename : null,
+      isPublished: user.role === 'admin',
+    });
+
     return res.send(album);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {

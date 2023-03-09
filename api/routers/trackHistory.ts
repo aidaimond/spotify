@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import album from "../models/Album";
 import {Track} from "../models/Track";
-import {TrackHistoryType, TrackType2} from "../types";
+import {TrackHistoryType, TrackType} from "../types";
 
 const trackHistoryRouter = express.Router();
 
@@ -14,7 +14,7 @@ trackHistoryRouter.post('/', auth, async (req, res, next) => {
     return res.status(400).send({message: 'Track is required!'});
   }
   const user = (req as RequestWithUser).user;
-  const track: TrackType2 | null = await Track.findById(req.body.track).populate('album', 'artist');
+  const track: TrackType | null = await Track.findById(req.body.track).populate('album', 'artist');
 
   if (!track) {
     return res.status(404);

@@ -2,7 +2,7 @@ import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
-import {ArtistType} from "../types";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const artistsRouter = express.Router();
 
@@ -15,20 +15,19 @@ artistsRouter.get('/', async (req, res) => {
   }
 });
 
-artistsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
-  if(!req.body.name) {
-    return res.status(400).send({error: 'Artist name is required'});
-  }
-
-  const artistData: ArtistType = {
-    name: req.body.name,
-    image: req.file ? req.file.filename : null,
-    info: req.body.info,
-  };
-  const artist = new Artist(artistData);
-
+artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
   try {
-    await artist.save();
+    if (!req.body.name) {
+      return res.status(400).send({error: 'Artist name is required'});
+    }
+    const user = (req as RequestWithUser).user;
+
+    const artist = await Artist.create({
+      name: req.body.name,
+      image: req.file ? req.file.filename : null,
+      info: req.body.info,
+      isPublished: user.role === 'admin',
+    });
     return res.send(artist);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
@@ -38,5 +37,7 @@ artistsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => 
     }
   }
 });
+
+
 
 export default artistsRouter;

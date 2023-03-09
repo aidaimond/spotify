@@ -3,7 +3,7 @@ import Album from "./Album";
 
 const Schema = mongoose.Schema;
 
-const TracksSchema = new Schema ({
+const TracksSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -26,6 +26,10 @@ const TracksSchema = new Schema ({
     type: Number,
     required: true,
   },
+  isPublished: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 export const Track = mongoose.model('Track', TracksSchema);

@@ -10,6 +10,10 @@ const ArtistsSchema = new Schema({
   },
   image: String,
   info: String,
+  isPublished: {
+    type: Boolean,
+    default: false,
+}
 });
 
 const Artist = mongoose.model('Artist', ArtistsSchema);
