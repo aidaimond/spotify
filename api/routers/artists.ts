@@ -7,13 +7,17 @@ import permit from "../middleware/permit";
 import Album from "../models/Album";
 import {Track} from "../models/Track";
 import {IArtist} from "../types";
+import user from "../middleware/user";
 
 const artistsRouter = express.Router();
 
-artistsRouter.get('/', async (req, res) => {
+artistsRouter.get('/', user, async (req, res) => {
+
+  const user = (req as RequestWithUser).user;
+
   try {
-    const artist = await Artist.find();
-    return res.send(artist);
+      const artist = user.role === 'admin' ? await Artist.find() :  await Artist.find({isPublished: true});
+      return res.send(artist);
   } catch {
     return res.sendStatus(500);
   }

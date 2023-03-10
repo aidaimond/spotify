@@ -6,29 +6,42 @@ import {imagesUpload} from "../multer";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import {ITrack} from "../types";
+import user from "../middleware/user";
 
 const tracksRouter = express.Router();
 
-tracksRouter.get('/', async (req, res, next) => {
+tracksRouter.get('/', user, async (req, res, next) => {
+  const user = (req as RequestWithUser).user;
   try {
     if (req.query.album) {
-      const albumsTracks = await Track.find({album: req.query.album}).populate({
+      const albumsTracks = user.role === 'admin' ? await Track.find({album: req.query.album}).populate({
         path: "album",
         select: "name artist",
         populate: {
           path: "artist",
           select: "name",
         }
-      }).sort('number');
+      }).sort('number') :
+        await Track.find({album: req.query.album, isPublished: true}).populate({
+          path: "album",
+          select: "name artist",
+          populate: {
+            path: "artist",
+            select: "name",
+          }
+        }).sort('number');
       return res.send(albumsTracks);
     }
     if (req.query.artist) {
-      const albums = await Album.find({artist: req.query.artist});
+      const albums = user.role === 'admin' ? await Album.find({artist: req.query.artist}) : await Album.find({
+        artist: req.query.artist,
+        isPublished: true
+      });
       const idArray = albums.map(p => p._id);
-      const tracks = await Track.find({album: idArray});
+      const tracks = user.role === 'admin' ? await Track.find({album: idArray}) : await Track.find({album: idArray, isPublished: true});
       return res.send(tracks);
     }
-    const tracks = await Track.find();
+    const tracks = user.role === 'admin' ? await Track.find() : await Track.find({isPublished: true});
     return res.send(tracks);
   } catch (e) {
     next(e);
@@ -37,7 +50,7 @@ tracksRouter.get('/', async (req, res, next) => {
 
 tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
   try {
-    if (!req.body.name || !req.body.album || req.body.duration) {
+    if (!req.body.name || !req.body.album || !req.body.duration) {
       return res.status(400).send({message: 'The name or album is required!'});
     }
 
@@ -74,7 +87,7 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
     const track: HydratedDocument<ITrack> | null = await Track.findById(req.query.id);
-    if(!track) {
+    if (!track) {
       return res.sendStatus(404);
     }
 

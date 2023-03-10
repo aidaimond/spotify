@@ -6,17 +6,20 @@ import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import {Track} from "../models/Track";
 import {IAlbum} from "../types";
+import user from "../middleware/user";
 
 const albumsRouter = express.Router();
 
-albumsRouter.get('/', async (req, res, next) => {
+albumsRouter.get('/', user, async (req, res, next) => {
+  const user = (req as RequestWithUser).user;
   try {
     if (req.query.artist) {
-      const artistAlbums = await Album.find({artist: req.query.artist}).populate('artist', 'name').sort({yearOfIssue: -1});
-      return res.send(artistAlbums);
+        const artistAlbums = user.role === 'admin' ? await Album.find({artist: req.query.artist}).populate('artist', 'name').sort({yearOfIssue: -1}) :
+          await Album.find({artist: req.query.artist, isPublished: true}).populate('artist', 'name').sort({yearOfIssue: -1});
+        return res.send(artistAlbums);
     } else {
-      const album = await Album.find();
-      return res.send(album);
+        const album = user.role === 'admin' ? await Album.find() : await Album.find({isPublished: true});
+        return res.send(album);
     }
   } catch (e) {
     next(e);
