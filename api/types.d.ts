@@ -1,3 +1,5 @@
+import {ObjectId} from "mongoose";
+
 export interface TrackType {
   name: string;
   album: {
@@ -21,3 +23,28 @@ export interface TrackHistoryType {
   datetime: string;
 }
 
+export interface ITrack {
+  _id: ObjectId;
+  name: string;
+  album: ObjectId;
+  duration: string;
+  number: number;
+  isPublished: boolean;
+}
+
+export interface IAlbum {
+  _id: ObjectId;
+  name: string;
+  artist: ObjectId;
+  yearOfIssue: string;
+  image: string;
+  isPublished: boolean;
+}
+
+export interface IArtist {
+  _id: ObjectId;
+  name: string;
+  image: string;
+  info: string;
+  isPublished: boolean;
+}

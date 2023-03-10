@@ -1,10 +1,11 @@
 import express from "express";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
-import mongoose from "mongoose";
+import mongoose, {HydratedDocument} from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import {Track} from "../models/Track";
+import {IAlbum} from "../types";
 
 const albumsRouter = express.Router();
 
@@ -76,7 +77,12 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 
 albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
-    const album = await Album.findOneAndUpdate({_id: req.body.album}, {isPublished: true}, {new: true});
+    const album: HydratedDocument<IAlbum> | null = await Album.findById(req.query.id);
+    if(!album) {
+      return res.sendStatus(404);
+    }
+    album.isPublished = !album.isPublished;
+    await album.save();
     return res.send(album);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {

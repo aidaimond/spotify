@@ -1,11 +1,12 @@
 import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
-import mongoose from "mongoose";
+import mongoose, {HydratedDocument} from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import Album from "../models/Album";
 import {Track} from "../models/Track";
+import {IArtist} from "../types";
 
 const artistsRouter = express.Router();
 
@@ -62,7 +63,13 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 
 artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
-    const artist = await Artist.findOneAndUpdate({_id: req.body.artist}, {isPublished: true}, {new: true});
+    const artist: HydratedDocument<IArtist> | null = await Artist.findById(req.query.id);
+    if(!artist) {
+      return res.sendStatus(404);
+    }
+
+    artist.isPublished = !artist.isPublished;
+    await artist.save();
     return res.send(artist);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
