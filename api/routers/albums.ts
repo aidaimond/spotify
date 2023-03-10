@@ -4,6 +4,7 @@ import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import {Track} from "../models/Track";
 
 const albumsRouter = express.Router();
 
@@ -60,12 +61,29 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
 
 albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
+    const albumTracks = await Track.find({album: req.params.id});
+    for( let i = 0; i < albumTracks.length; i++) {
+      await Track.deleteOne({_id: albumTracks[i]._id});
+    }
     await Album.deleteOne({_id: req.params.id});
     const albums = await Album.find();
     return res.send(albums);
 
   } catch (e) {
     next(e);
+  }
+});
+
+albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const album = await Album.findOneAndUpdate({_id: req.body.album}, {isPublished: true}, {new: true});
+    return res.send(album);
+  } catch (e) {
+    if (e instanceof mongoose.Error.ValidationError) {
+      return res.status(400).send(e);
+    } else {
+      return next(e);
+    }
   }
 });
 

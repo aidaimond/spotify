@@ -4,6 +4,8 @@ import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import Album from "../models/Album";
+import {Track} from "../models/Track";
 
 const artistsRouter = express.Router();
 
@@ -41,12 +43,33 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
 
 artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
+    const artistAlbums = await Album.find({artist: req.params.id});
+    for(let i = 0; i < artistAlbums.length; i++) {
+      const albumTracks = await Track.find({album: artistAlbums[i]._id});
+      for (let i = 0; i < albumTracks.length; i++) {
+        await Track.deleteOne({_id: albumTracks[i]._id});
+        await Album.deleteOne({_id: artistAlbums[i]._id});
+      }
+    }
     await Artist.deleteOne({_id: req.params.id});
     const artists = await Artist.find();
     return res.send(artists);
 
   } catch (e) {
     next(e);
+  }
+});
+
+artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const artist = await Artist.findOneAndUpdate({_id: req.body.artist}, {isPublished: true}, {new: true});
+    return res.send(artist);
+  } catch (e) {
+    if (e instanceof mongoose.Error.ValidationError) {
+      return res.status(400).send(e);
+    } else {
+      return next(e);
+    }
   }
 });
 

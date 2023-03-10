@@ -16,6 +16,7 @@ const run = async () => {
     await db.dropCollection('artists');
     await db.dropCollection('albums');
     await db.dropCollection('tracks');
+    await db.dropCollection('users');
   } catch (e) {
     console.log('Collections were not present, skipping drop...');
   }
@@ -30,7 +31,7 @@ const run = async () => {
       isPublished: true,
     },
     {name: "Imagine Dragons", image: "fixtures/dragons.jpeg", info: "Pop and rock group", isPublished: true},
-    {name: "Jay-Z", image: "fixtures/jayZ.webp", info: "American rapper, songwriter, music producer", isPublished: false});
+    {name: "Jay-Z", image: "fixtures/jayZ.jpeg", info: "American rapper, songwriter, music producer", isPublished: false});
 
 
   const [elephunk, monkeyBusiness, evolve, nightVision, bluePrint] = await Album.create({

@@ -70,4 +70,17 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   }
 });
 
+tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const track = await Track.findOneAndUpdate({_id: req.body.track}, {isPublished: true}, {new: true});
+    return res.send(track);
+  } catch (e) {
+    if (e instanceof mongoose.Error.ValidationError) {
+      return res.status(400).send(e);
+    } else {
+      return next(e);
+    }
+  }
+});
+
 export default tracksRouter;
