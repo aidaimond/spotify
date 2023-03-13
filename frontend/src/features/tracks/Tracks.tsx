@@ -27,9 +27,9 @@ const Tracks = () => {
       </Box> :
     <Grid container direction="column" spacing={2}>
       <Grid item container direction="column">
-        <Grid item>
+        <Grid item sx={{marginBottom: 2}}>
           {user && (
-            <Button color="primary" component={Link} to="/new-track">
+            <Button color="primary" variant="outlined" component={Link} to="/new-track">
               Add Track
             </Button>
           )}

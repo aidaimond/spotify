@@ -5,7 +5,6 @@ import mongoose, {HydratedDocument} from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import Album from "../models/Album";
-import {Track} from "../models/Track";
 import {IArtist} from "../types";
 import user from "../middleware/user";
 
@@ -29,14 +28,18 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
       return res.status(400).send({error: 'Artist name is required'});
     }
     const user = (req as RequestWithUser).user;
+    if (user) {
+      const artist = await Artist.create({
+        name: req.body.name,
+        image: req.file ? req.file.filename : null,
+        info: req.body.info,
+        isPublished: false,
+      });
+      return res.send(artist);
+    } else {
+      return res.status(403).send({message: 'You do not have permission to create'});
+    }
 
-    const artist = await Artist.create({
-      name: req.body.name,
-      image: req.file ? req.file.filename : null,
-      info: req.body.info,
-      isPublished: user.role === 'admin',
-    });
-    return res.send(artist);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
       return res.status(400).send(e);
@@ -48,18 +51,20 @@ artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, nex
 
 artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
-    const artistAlbums = await Album.find({artist: req.params.id});
-    for(let i = 0; i < artistAlbums.length; i++) {
-      const albumTracks = await Track.find({album: artistAlbums[i]._id});
-      for (let i = 0; i < albumTracks.length; i++) {
-        await Track.deleteOne({_id: albumTracks[i]._id});
-        await Album.deleteOne({_id: artistAlbums[i]._id});
+    const user = (req as RequestWithUser).user;
+    const artist = await Artist.findById(req.params.id);
+    if(artist && user.role === 'admin') {
+      const artistAlbums = await Album.find({artist: req.params.id});
+      if(artistAlbums.length > 0) {
+        return res.status(403).send({message: 'You can\'t delete an artist if they have albums'});
+      } else {
+        await Artist.deleteOne({_id: req.params.id});
+        const artists = await Artist.find();
+        return res.send(artists);
       }
+    } else {
+      return res.status(403).send({message: 'There is no such artist or you do not have permission to delete'});
     }
-    await Artist.deleteOne({_id: req.params.id});
-    const artists = await Artist.find();
-    return res.send(artists);
-
   } catch (e) {
     next(e);
   }
@@ -67,7 +72,7 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 
 artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
-    const artist: HydratedDocument<IArtist> | null = await Artist.findById(req.query.id);
+    const artist: HydratedDocument<IArtist> | null = await Artist.findById(req.params.id);
     if(!artist) {
       return res.sendStatus(404);
     }
@@ -83,7 +88,5 @@ artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, r
     }
   }
 });
-
-
 
 export default artistsRouter;

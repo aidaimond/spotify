@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Grid, MenuItem, TextField, Typography} from '@mui/material';
+import {Button, CircularProgress, Grid, MenuItem, TextField, Typography} from '@mui/material';
 import FileInput from '../../components/UI/FileInput/FileInput';
 import {AlbumMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
@@ -7,11 +7,13 @@ import {fetchArtists} from "../artists/artistsThunks";
 import {selectArtists} from "../artists/artistsSlice";
 import {createAlbum} from "./albumsThunks";
 import {useNavigate} from "react-router-dom";
+import {selectAlbumCreating} from "./albumsSlice";
 
 const AlbumForm = () => {
   const dispatch = useAppDispatch();
   const artists = useAppSelector(selectArtists);
   const navigate = useNavigate();
+  const creating = useAppSelector(selectAlbumCreating);
 
   const [state, setState] = useState<AlbumMutation>({
     name: '',
@@ -92,7 +94,9 @@ const AlbumForm = () => {
           <FileInput onChange={fileInputChangeHandler} name="image" label="Image"/>
         </Grid>
         <Grid item xs>
-          <Button type="submit" color="primary" variant="contained">Create</Button>
+          <Button type="submit" color="primary" variant="contained">
+            {creating ? <CircularProgress/> : 'Create'}
+          </Button>
         </Grid>
       </Grid>
     </form>

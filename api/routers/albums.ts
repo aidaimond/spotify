@@ -44,16 +44,21 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
       return res.status(404).send({message: 'Album name, year of issue or artist name is required'});
     }
     const user = (req as RequestWithUser).user;
+    if(user) {
 
-    const album = await Album.create({
-      name: req.body.name,
-      artist: req.body.artist,
-      yearOfIssue: req.body.yearOfIssue,
-      image: req.file ? req.file.filename : null,
-      isPublished: user.role === 'admin',
-    });
+      const album = await Album.create({
+        name: req.body.name,
+        artist: req.body.artist,
+        yearOfIssue: req.body.yearOfIssue,
+        image: req.file ? req.file.filename : null,
+        isPublished: false,
+      });
 
-    return res.send(album);
+      return res.send(album);
+    } else {
+      return res.status(403).send({message: 'You do not have permission to create'});
+    }
+
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
       return res.status(400).send(e);
@@ -65,14 +70,20 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
 
 albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
-    const albumTracks = await Track.find({album: req.params.id});
-    for( let i = 0; i < albumTracks.length; i++) {
-      await Track.deleteOne({_id: albumTracks[i]._id});
+    const user = (req as RequestWithUser).user;
+    const album = await Album.findById(req.params.id);
+    if (user && album) {
+      const albumTracks = await Track.find({album: req.params.id});
+      if (albumTracks.length > 0) {
+        return res.status(403).send({message: 'You can\'t delete an album if they have tracks'});
+      } else {
+        await Album.deleteOne({_id: req.params.id});
+        const albums = await Album.find();
+        return res.send(albums);
+      }
+    } else {
+      return res.status(403).send({message: 'There is no such album or you do not have permission to delete'});
     }
-    await Album.deleteOne({_id: req.params.id});
-    const albums = await Album.find();
-    return res.send(albums);
-
   } catch (e) {
     next(e);
   }
@@ -80,7 +91,7 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 
 albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
-    const album: HydratedDocument<IAlbum> | null = await Album.findById(req.query.id);
+    const album: HydratedDocument<IAlbum> | null = await Album.findById(req.params.id);
     if(!album) {
       return res.sendStatus(404);
     }

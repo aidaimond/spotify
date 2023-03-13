@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Grid, MenuItem, TextField, Typography} from '@mui/material';
+import {Button, CircularProgress, Grid, MenuItem, TextField, Typography} from '@mui/material';
 import {TrackMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectAlbums} from "../albums/albumsSlice";
 import {fetchAlbums} from "../albums/albumsThunks";
 import {createTrack} from "./tracksThunks";
 import {useNavigate} from "react-router-dom";
+import {selectCreateLoading} from "./tracksSlice";
 
 const TrackForm = () => {
   const dispatch = useAppDispatch();
   const albums = useAppSelector(selectAlbums);
   const navigate = useNavigate();
+  const creating = useAppSelector(selectCreateLoading);
 
   useEffect(() => {
     dispatch(fetchAlbums());
@@ -92,7 +94,9 @@ const TrackForm = () => {
           />
         </Grid>
         <Grid item xs>
-          <Button type="submit" color="primary" variant="contained">Create</Button>
+          <Button type="submit" color="primary" variant="contained">
+            {creating ? <CircularProgress/> : 'Create'}
+          </Button>
         </Grid>
       </Grid>
     </form>

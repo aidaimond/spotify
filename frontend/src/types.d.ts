@@ -3,6 +3,7 @@ export interface IArtist {
   image: string | null;
   info: string;
   _id: string;
+  isPublished: boolean;
 }
 
 export interface IAlbum {
@@ -11,6 +12,7 @@ export interface IAlbum {
   yearOfIssue: number;
   image: string | null;
   _id: string;
+  isPublished: boolean;
 }
 
 export interface ITrack {
@@ -19,6 +21,7 @@ export interface ITrack {
   duration: string;
   _id: string;
   number: number;
+  isPublished: boolean;
 }
 
 export interface User {

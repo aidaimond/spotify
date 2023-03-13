@@ -53,18 +53,20 @@ tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
     if (!req.body.name || !req.body.album || !req.body.duration) {
       return res.status(400).send({message: 'The name or album is required!'});
     }
-
     const user = (req as RequestWithUser).user;
+    if(user) {
+      const track = await Track.create({
+        name: req.body.name,
+        album: req.body.album,
+        duration: req.body.duration,
+        number: req.body.number,
+        isPublished: false,
+      });
+      return res.send(track);
+    } else {
+      return res.status(403).send({message: 'You do not have permission to create'});
+    }
 
-    const track = await Track.create({
-      name: req.body.name,
-      album: req.body.album,
-      duration: req.body.duration,
-      number: req.body.number,
-      isPublished: user.role === 'admin',
-    });
-
-    return res.send(track);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
       return res.status(400).send(e);
@@ -75,10 +77,14 @@ tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
 
 tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
-    await Track.deleteOne({_id: req.params.id});
-    const tracks = await Track.find();
-    return res.send(tracks);
-
+    const user = (req as RequestWithUser).user;
+    if(user) {
+      await Track.deleteOne({_id: req.params.id});
+      const tracks = await Track.find();
+      return res.send(tracks);
+    } else {
+      return res.status(403).send({message: 'You do not have permission to delete'});
+    }
   } catch (e) {
     next(e);
   }
@@ -86,7 +92,7 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 
 tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
-    const track: HydratedDocument<ITrack> | null = await Track.findById(req.query.id);
+    const track: HydratedDocument<ITrack> | null = await Track.findById(req.params.id);
     if (!track) {
       return res.sendStatus(404);
     }

@@ -22,30 +22,30 @@ const Albums = () => {
 
   return (
     albumsLoading ?
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress />
+      <Box sx={{display: 'flex'}}>
+        <CircularProgress/>
       </Box> :
-    <Grid container direction="column" spacing={2}>
-      <Grid item container justifyContent="space-between" alignItems="center">
-        <Grid item>
-          <Typography variant="h4">
-            {albums.length && albums[0].artist.name || null}
-          </Typography>
+      <Grid container direction="column" spacing={2}>
+        <Grid item container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h4">
+              {albums.length && albums[0].artist.name || null}
+            </Typography>
+          </Grid>
+          <Grid item>
+            {user && (
+              <Button color="primary" component={Link} to="/new-album">
+                Add album
+              </Button>
+            )}
+          </Grid>
         </Grid>
-        <Grid item>
-          {user && (
-            <Button color="primary" component={Link} to="/new-album">
-              Add album
-            </Button>
-          )}
+        <Grid item container spacing={2}>
+          {albums.map(album => (
+            <AlbumItem key={album._id} album={album}/>
+          ))}
         </Grid>
       </Grid>
-      <Grid item container spacing={2}>
-        {albums.map(album => (
-          <AlbumItem key={album._id} album={album}/>
-        ))}
-      </Grid>
-    </Grid>
   );
 }
 

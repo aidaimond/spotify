@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
-import {Button, Grid, TextField} from '@mui/material';
+import {Button, CircularProgress, Grid, TextField} from '@mui/material';
 import FileInput from '../../components/UI/FileInput/FileInput';
 import {ArtistMutation} from "../../types";
+import {useAppSelector} from "../../app/hooks";
+import {createArtistLoading} from "./artistsSlice";
 
 interface Props {
   onSubmit: (mutation: ArtistMutation) => void;
 }
 
 const ArtistForm: React.FC<Props> = ({onSubmit}) => {
+  const createArtist = useAppSelector(createArtistLoading);
 
   const [state, setState] = useState<ArtistMutation>({
     name: '',
@@ -63,7 +66,9 @@ const ArtistForm: React.FC<Props> = ({onSubmit}) => {
           <FileInput onChange={fileInputChangeHandler} name="image" label="Image"/>
         </Grid>
         <Grid item xs>
-          <Button type="submit" color="primary" variant="contained">Create</Button>
+          <Button type="submit" color="primary" variant="contained">
+            {createArtist ? <CircularProgress/> : 'Create'}
+          </Button>
         </Grid>
       </Grid>
     </form>
