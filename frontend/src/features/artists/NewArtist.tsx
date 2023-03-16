@@ -10,7 +10,6 @@ const NewArtist = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-
   const onFormSubmit = async (mutation: ArtistMutation) => {
     await dispatch(createArtist(mutation));
     navigate('/');

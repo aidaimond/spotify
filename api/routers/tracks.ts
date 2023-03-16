@@ -14,15 +14,9 @@ tracksRouter.get('/', user, async (req, res, next) => {
   const user = (req as RequestWithUser).user;
   try {
     if (req.query.album) {
-      const albumsTracks = user.role === 'admin' ? await Track.find({album: req.query.album}).populate({
-        path: "album",
-        select: "name artist",
-        populate: {
-          path: "artist",
-          select: "name",
-        }
-      }).sort('number') :
-        await Track.find({album: req.query.album, isPublished: true}).populate({
+
+      if (user && user.role === 'admin') {
+        const albumsTracks = await Track.find({album: req.query.album}).populate({
           path: "album",
           select: "name artist",
           populate: {
@@ -30,18 +24,38 @@ tracksRouter.get('/', user, async (req, res, next) => {
             select: "name",
           }
         }).sort('number');
+
+        return res.send(albumsTracks);
+      }
+
+      const albumsTracks = await Track.find({album: req.query.album, isPublished: true}).populate({
+        path: "album",
+        select: "name artist",
+        populate: {
+          path: "artist",
+          select: "name",
+        }
+      }).sort('number');
+
       return res.send(albumsTracks);
     }
     if (req.query.artist) {
-      const albums = user.role === 'admin' ? await Album.find({artist: req.query.artist}) : await Album.find({
-        artist: req.query.artist,
-        isPublished: true
-      });
+      if (user && user.role === 'admin') {
+        const albums = await Album.find({artist: req.query.artist});
+        const idArray = albums.map(p => p._id);
+        const tracks = await Track.find({album: idArray});
+        return res.send(tracks);
+      }
+      const albums = await Album.find({ artist: req.query.artist, isPublished: true });
       const idArray = albums.map(p => p._id);
-      const tracks = user.role === 'admin' ? await Track.find({album: idArray}) : await Track.find({album: idArray, isPublished: true});
+      const tracks = await Track.find({ album: idArray, isPublished: true });
       return res.send(tracks);
     }
-    const tracks = user.role === 'admin' ? await Track.find() : await Track.find({isPublished: true});
+    if(user && user.role === 'admin') {
+      const tracks =  await Track.find();
+      return res.send(tracks);
+    }
+    const tracks = await Track.find({isPublished: true});
     return res.send(tracks);
   } catch (e) {
     next(e);
@@ -54,7 +68,7 @@ tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
       return res.status(400).send({message: 'The name or album is required!'});
     }
     const user = (req as RequestWithUser).user;
-    if(user) {
+    if (user) {
       const track = await Track.create({
         name: req.body.name,
         album: req.body.album,
@@ -78,7 +92,7 @@ tracksRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
 tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
     const user = (req as RequestWithUser).user;
-    if(user) {
+    if (user) {
       await Track.deleteOne({_id: req.params.id});
       const tracks = await Track.find();
       return res.send(tracks);

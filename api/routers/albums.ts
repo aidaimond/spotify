@@ -14,12 +14,20 @@ albumsRouter.get('/', user, async (req, res, next) => {
   const user = (req as RequestWithUser).user;
   try {
     if (req.query.artist) {
-        const artistAlbums = user.role === 'admin' ? await Album.find({artist: req.query.artist}).populate('artist', 'name').sort({yearOfIssue: -1}) :
-          await Album.find({artist: req.query.artist, isPublished: true}).populate('artist', 'name').sort({yearOfIssue: -1});
+      if (user && user.role === 'admin') {
+        const artistAlbums = await Album.find({artist: req.query.artist}).populate('artist', 'name').sort({yearOfIssue: -1});
         return res.send(artistAlbums);
+      }
+      const artistAlbums = await Album.find({artist: req.query.artist, isPublished: true
+      }).populate('artist', 'name').sort({yearOfIssue: -1});
+      return res.send(artistAlbums);
     } else {
-        const album = user.role === 'admin' ? await Album.find() : await Album.find({isPublished: true});
+      if (user && user.role === 'admin') {
+        const album = await Album.find();
         return res.send(album);
+      }
+      const album = await Album.find({isPublished: true});
+      return res.send(album);
     }
   } catch (e) {
     next(e);
@@ -40,11 +48,8 @@ albumsRouter.get('/:id', async (req, res, next) => {
 
 albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
   try {
-    if (!req.body.name || !req.body.artist || !req.body.yearOfIssue) {
-      return res.status(404).send({message: 'Album name, year of issue or artist name is required'});
-    }
     const user = (req as RequestWithUser).user;
-    if(user) {
+    if (user) {
 
       const album = await Album.create({
         name: req.body.name,
@@ -92,7 +97,7 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
     const album: HydratedDocument<IAlbum> | null = await Album.findById(req.params.id);
-    if(!album) {
+    if (!album) {
       return res.sendStatus(404);
     }
     album.isPublished = !album.isPublished;

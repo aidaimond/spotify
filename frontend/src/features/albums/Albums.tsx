@@ -29,7 +29,7 @@ const Albums = () => {
         <Grid item container justifyContent="space-between" alignItems="center">
           <Grid item>
             <Typography variant="h4">
-              {albums.length && albums[0].artist.name || null}
+              {albums.length && albums[0].artist.name}
             </Typography>
           </Grid>
           <Grid item>

@@ -11,12 +11,17 @@ import user from "../middleware/user";
 const artistsRouter = express.Router();
 
 artistsRouter.get('/', user, async (req, res) => {
-
-  const user = (req as RequestWithUser).user;
-
   try {
-      const artist = user.role === 'admin' ? await Artist.find() :  await Artist.find({isPublished: true});
+    const user = (req as RequestWithUser).user;
+
+    if (user && user.role === 'admin') {
+      const artist = await Artist.find();
       return res.send(artist);
+    }
+
+    const artist = await Artist.find({isPublished: true});
+    return res.send(artist);
+
   } catch {
     return res.sendStatus(500);
   }
@@ -24,10 +29,8 @@ artistsRouter.get('/', user, async (req, res) => {
 
 artistsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next) => {
   try {
-    if (!req.body.name) {
-      return res.status(400).send({error: 'Artist name is required'});
-    }
     const user = (req as RequestWithUser).user;
+
     if (user) {
       const artist = await Artist.create({
         name: req.body.name,
@@ -53,9 +56,9 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
     const user = (req as RequestWithUser).user;
     const artist = await Artist.findById(req.params.id);
-    if(artist && user.role === 'admin') {
+    if (artist && user.role === 'admin') {
       const artistAlbums = await Album.find({artist: req.params.id});
-      if(artistAlbums.length > 0) {
+      if (artistAlbums.length > 0) {
         return res.status(403).send({message: 'You can\'t delete an artist if they have albums'});
       } else {
         await Artist.deleteOne({_id: req.params.id});
@@ -73,7 +76,7 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
 artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
   try {
     const artist: HydratedDocument<IArtist> | null = await Artist.findById(req.params.id);
-    if(!artist) {
+    if (!artist) {
       return res.sendStatus(404);
     }
 

@@ -36,12 +36,12 @@ const Tracks = () => {
         </Grid>
         <Grid item>
           <Typography variant="h5" sx={{marginBottom: 2}}>
-            {tracks.length && tracks[0].album.artist.name || null}
+            {tracks.length && tracks[0].album.artist.name}
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="h5">
-            {tracks.length && tracks[0].album.name || null}
+            {tracks.length && tracks[0].album.name}
           </Typography>
         </Grid>
       </Grid>

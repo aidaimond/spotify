@@ -63,9 +63,9 @@ const TrackItem: React.FC<Props> = ({track}) => {
                   <DownloadDoneIcon/>
                 </IconButton> :
                 <>
-                  <IconButton>
+                  <IconButton onClick={() => update(track._id)}>
                     {updating ? <CircularProgress/> :
-                      <PublishIcon onClick={() => update(track._id)}/>}
+                      <PublishIcon/>}
                   </IconButton>
                   <IconButton>
                     <UnpublishedIcon/>
