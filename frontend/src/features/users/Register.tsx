@@ -6,6 +6,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {selectRegisterError, selectRegisterLoading} from './usersSlice';
 import { register } from './usersThunks';
+import {GoogleLogin} from "@react-oauth/google";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -57,6 +58,16 @@ const Register = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        <Box sx={{pt: 2}}>
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              console.log(credentialResponse);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </Box>
         <Box component="form" onSubmit={submitFormHandler} sx={{mt: 3}}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

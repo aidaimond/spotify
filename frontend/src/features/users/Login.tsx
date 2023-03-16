@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { LoginMutation } from '../../types';
+import React, {useState} from 'react';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {LoginMutation} from '../../types';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Container,
   Grid,
   Link,
   TextField,
-  Typography,
-  Alert,
-  CircularProgress
+  Typography
 } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {selectLoginError, selectLoginLoading} from './usersSlice';
-import { login } from './usersThunks';
+import {login} from './usersThunks';
+import {GoogleLogin} from "@react-oauth/google";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -56,6 +57,16 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
+        <Box sx={{pt: 2}}>
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              console.log(credentialResponse);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </Box>
         {error && (
           <Alert
             severity="error"
@@ -93,7 +104,7 @@ const Login = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            {loginLoading ? <CircularProgress/>: "Sign In"}
+            {loginLoading ? <CircularProgress/> : "Sign In"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
