@@ -41,7 +41,10 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods> ({
     required: true,
     default: 'user',
     enum: ['user', 'admin']
-  }
+  },
+  displayName: String,
+  googleID: String,
+  avatar: String,
 });
 
 UserSchema.pre('save', async function(next) {
@@ -54,7 +57,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 UserSchema.set('toJSON', {
-  transform: (doc, ret, options) => {
+  transform: (doc, ret) => {
     delete ret.password;
     return ret;
   }

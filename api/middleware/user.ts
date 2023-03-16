@@ -11,9 +11,17 @@ const auth = async (expressReq: Request, res: Response, next: NextFunction) => {
   const req = expressReq as RequestWithUser;
   const token = req.get('Authorization');
 
-  const user = token ? await User.findOne({token}) : next();
+  if (!token) {
+    return next();
+  }
 
-  user && token ? req.user = user : next();
+  const user = await User.findOne({token});
+
+  if (!user) {
+    return next();
+  }
+
+  req.user = user;
 
   return next();
 };
