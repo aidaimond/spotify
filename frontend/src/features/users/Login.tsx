@@ -1,22 +1,22 @@
-import React, {useState} from 'react';
-import {Link as RouterLink, useNavigate} from 'react-router-dom';
-import {LoginMutation} from '../../types';
+import React, { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { LoginMutation } from '../../types';
 import {
-  Alert,
   Avatar,
   Box,
   Button,
-  CircularProgress,
   Container,
   Grid,
   Link,
   TextField,
-  Typography
+  Typography,
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {selectLoginError, selectLoginLoading} from './usersSlice';
-import {login} from './usersThunks';
+import {googleLogin, login} from './usersThunks';
 import {GoogleLogin} from "@react-oauth/google";
 
 const Login = () => {
@@ -41,6 +41,11 @@ const Login = () => {
     navigate('/');
   };
 
+  const googleLoginHandler = async (credential: string) => {
+    await dispatch(googleLogin(credential)).unwrap();
+    navigate('/');
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -57,10 +62,12 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
-        <Box sx={{pt: 2}}>
+        <Box sx={{ pt: 2 }}>
           <GoogleLogin
             onSuccess={(credentialResponse) => {
-              console.log(credentialResponse);
+              if (credentialResponse.credential) {
+                void googleLoginHandler(credentialResponse.credential);
+              }
             }}
             onError={() => {
               console.log('Login Failed');
@@ -104,7 +111,7 @@ const Login = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            {loginLoading ? <CircularProgress/> : "Sign In"}
+            {loginLoading ? <CircularProgress/>: "Sign In"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

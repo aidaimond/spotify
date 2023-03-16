@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { RegisterMutation } from '../../types';
+import React, {useState} from 'react';
+import {RegisterMutation} from '../../types';
 import {Avatar, Box, Button, CircularProgress, Container, Grid, Link, TextField, Typography} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {selectRegisterError, selectRegisterLoading} from './usersSlice';
-import { register } from './usersThunks';
+import {googleLogin, register} from './usersThunks';
 import {GoogleLogin} from "@react-oauth/google";
 
 const Register = () => {
@@ -42,6 +42,12 @@ const Register = () => {
     }
   };
 
+  const googleLoginHandler = async (credential: string) => {
+    await dispatch(googleLogin(credential)).unwrap();
+    navigate('/');
+  };
+
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -61,7 +67,9 @@ const Register = () => {
         <Box sx={{pt: 2}}>
           <GoogleLogin
             onSuccess={(credentialResponse) => {
-              console.log(credentialResponse);
+              if (credentialResponse.credential) {
+                void googleLoginHandler(credentialResponse.credential);
+              }
             }}
             onError={() => {
               console.log('Login Failed');
