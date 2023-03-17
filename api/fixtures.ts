@@ -21,8 +21,8 @@ const run = async () => {
     console.log('Collections were not present, skipping drop...');
   }
 
-  await User.create({username: "user", password: "1qaz2wsx", token: crypto.randomUUID(), role: 'admin'});
-  await User.create({username: "attractor", password: "2wsx3edc", token: crypto.randomUUID(), role: 'user'});
+  await User.create({username: "user", password: "1qaz2wsx", token: crypto.randomUUID(), role: 'admin', displayName: "User", avatar: "fixtures/user.jpeg"});
+  await User.create({username: "attractor", password: "2wsx3edc", token: crypto.randomUUID(), role: 'user', displayName: "Attractor", avatar: "fixtures/attractor.jpeg"});
 
   const [theBlackEyedPeas, imagineDragons, jayZ] = await Artist.create({
       name: "The Black Eyed Peas",

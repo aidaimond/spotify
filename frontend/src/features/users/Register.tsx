@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {selectRegisterError, selectRegisterLoading} from './usersSlice';
 import {googleLogin, register} from './usersThunks';
 import {GoogleLogin} from "@react-oauth/google";
+import FileInput from "../../components/UI/FileInput/FileInput";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -14,7 +15,7 @@ const Register = () => {
   const registerLoading = useAppSelector(selectRegisterLoading);
   const navigate = useNavigate();
 
-  const [state, setState] = useState<RegisterMutation>({username: '', password: ''});
+  const [state, setState] = useState<RegisterMutation>({username: '', password: '', displayName: '', avatar: null});
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -45,6 +46,13 @@ const Register = () => {
   const googleLoginHandler = async (credential: string) => {
     await dispatch(googleLogin(credential)).unwrap();
     navigate('/');
+  };
+
+  const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, files} = e.target;
+    setState(prevState => ({
+      ...prevState, [name]: files && files[0] ? files[0] : null,
+    }));
   };
 
 
@@ -102,6 +110,21 @@ const Register = () => {
                 error={Boolean(getFieldError('password'))}
                 helperText={getFieldError('password')}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                label="Display Name"
+                name="displayName"
+                autoComplete="new-displayName"
+                value={state.displayName}
+                onChange={inputChangeHandler}
+                error={Boolean(getFieldError('displayName'))}
+                helperText={getFieldError('displayName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FileInput onChange={fileInputChangeHandler} name="avatar" label="Avatar"/>
             </Grid>
           </Grid>
           <Button

@@ -49,6 +49,8 @@ export interface ValidationError {
 export interface RegisterMutation {
   username: string;
   password: string;
+  displayName: string;
+  avatar: File | null;
 }
 
 export interface RegisterResponse {

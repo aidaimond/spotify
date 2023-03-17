@@ -31,7 +31,7 @@ const Artists = () => {
         </Grid>
         <Grid item>
           {user && (
-            <Button color="primary" component={Link} to="/new-artist">
+            <Button color="primary" component={Link} to="/new-artist" variant="outlined">
               Add artist
             </Button>
           )}

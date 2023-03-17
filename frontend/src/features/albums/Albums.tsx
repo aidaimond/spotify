@@ -34,7 +34,7 @@ const Albums = () => {
           </Grid>
           <Grid item>
             {user && (
-              <Button color="primary" component={Link} to="/new-album">
+              <Button color="primary" component={Link} to="/new-album" variant="outlined">
                 Add album
               </Button>
             )}

@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {Button, Menu, MenuItem} from '@mui/material';
+import {Avatar, Button, Menu, MenuItem, Stack} from '@mui/material';
 import {User} from '../../../types';
 import {Link} from "react-router-dom";
 import {useAppDispatch} from "../../../app/hooks";
 import {logout} from "../../../features/users/usersThunks";
+import {apiURL} from "../../../constants";
 
 interface Props {
   user: User;
@@ -26,12 +27,16 @@ const UserMenu: React.FC<Props> = ({user}) => {
 
   return (
     <>
-      <Button
-        onClick={handleClick}
-        color="inherit"
-      >
-        Hello, {user.displayName}
-      </Button>
+      <Stack direction="row" spacing={2}>
+        <Button
+          onClick={handleClick}
+          color="inherit"
+        >
+          Hello, {user.displayName}
+        </Button>
+        <Avatar alt="Avatar" src={user?.googleID ? user.avatar : apiURL + '/' + user.avatar}/>
+      </Stack>
+
       <Menu
         anchorEl={anchorEl}
         keepMounted
@@ -42,7 +47,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
         <MenuItem>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
         <MenuItem>
-            <Link style={{textDecoration: "none", color: "inherit"}} to="/track_history">Track History</Link>
+          <Link style={{textDecoration: "none", color: "inherit"}} to="/track_history">Track History</Link>
         </MenuItem>
       </Menu>
     </>
