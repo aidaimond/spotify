@@ -87,6 +87,7 @@ const AlbumForm = () => {
             value={state.yearOfIssue}
             onChange={inputChangeHandler}
             name="yearOfIssue"
+            type="number"
             required
           />
         </Grid>

@@ -54,7 +54,7 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
       const album = await Album.create({
         name: req.body.name,
         artist: req.body.artist,
-        yearOfIssue: req.body.yearOfIssue,
+        yearOfIssue: parseFloat(req.body.yearOfIssue),
         image: req.file ? req.file.filename : null,
         isPublished: false,
       });

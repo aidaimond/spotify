@@ -79,6 +79,7 @@ const TrackForm = () => {
             value={state.duration}
             onChange={inputChangeHandler}
             name="duration"
+            type="number"
             required
           />
         </Grid>
