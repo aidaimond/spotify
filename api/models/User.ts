@@ -47,10 +47,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods> ({
     required: true,
   },
   googleID: String,
-  avatar: {
-    type: String,
-    required: true,
-  },
+  avatar: String,
 });
 
 UserSchema.pre('save', async function(next) {

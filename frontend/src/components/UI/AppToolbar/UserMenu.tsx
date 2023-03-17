@@ -38,7 +38,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
         >
           Hello, {user.displayName}
         </Button>
-        <Avatar alt="Avatar" src={user?.googleID ? user.avatar : apiURL + '/' + user.avatar}/>
+        <Avatar alt={user.displayName} src={user?.googleID ? user.avatar : apiURL + '/' + user.avatar}/>
       </Stack>
 
       <Menu
