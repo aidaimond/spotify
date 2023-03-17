@@ -4,12 +4,13 @@ import User from "../models/User";
 import {OAuth2Client} from "google-auth-library";
 import config from "../config";
 import * as crypto from "crypto";
+import {avatarsUpload} from "../multer";
 
 const usersRouter = express.Router();
 
 const client = new OAuth2Client(config.google.clientId);
 
-usersRouter.post('/', async (req, res, next) => {
+usersRouter.post('/', avatarsUpload.single('avatar'), async (req, res, next) => {
   try {
     if (!req.body.username || !req.body.password) {
       return res.status(400).send({message: 'Password or username is required!'});
@@ -18,6 +19,8 @@ usersRouter.post('/', async (req, res, next) => {
     const user = new User({
       username: req.body.username,
       password: req.body.password,
+      displayName: req.body.displayName,
+      avatar: req.file ? req.file.filename : null,
     });
 
     user.generateToken();
